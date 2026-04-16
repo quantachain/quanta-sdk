@@ -1,0 +1,32 @@
+{
+  "name": "quanta-sdk",
+  "version": "0.1.0",
+  "description": "JS/TS SDK for the Quanta Protocol Ecosystem",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "quanta-cli": "dist/cli/index.js"
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "start": "node dist/cli/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "quanta",
+    "blockchain",
+    "pqc"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "quanta-wasm": "^0.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.0",
+    "tsup": "^8.0.2",
+    "typescript": "^5.4.5"
+  }
+}
