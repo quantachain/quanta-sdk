@@ -22,7 +22,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "quanta-wasm": "^0.2.0"
+    "quanta-wasm": "^0.2.2"
   },
   "devDependencies": {
     "@types/node": "^20.12.0",
