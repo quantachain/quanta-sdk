@@ -76,4 +76,48 @@ export class QuantaClient {
         
         return response.json();
     }
+
+    /**
+     * Get network stats
+     */
+    async getStats(): Promise<any> {
+        const response = await fetch(`${this.baseUrl}/api/stats`);
+        if (!response.ok) {
+            throw new Error(`Failed to fetch stats: ${response.statusText}`);
+        }
+        return response.json();
+    }
+
+    /**
+     * Get a block by height
+     */
+    async getBlock(height: number): Promise<any> {
+        const response = await fetch(`${this.baseUrl}/api/block/${height}`);
+        if (!response.ok) {
+            throw new Error(`Failed to fetch block: ${response.statusText}`);
+        }
+        return response.json();
+    }
+
+    /**
+     * Get transactions for an address
+     */
+    async getAddressTransactions(address: string, maxBlocks: number = 10000): Promise<any> {
+        const response = await fetch(`${this.baseUrl}/api/address/${address}/txs?max_blocks=${maxBlocks}`);
+        if (!response.ok) {
+            throw new Error(`Failed to fetch transactions: ${response.statusText}`);
+        }
+        return response.json();
+    }
+
+    /**
+     * Get transaction by hash
+     */
+    async getTx(hash: string): Promise<any> {
+        const response = await fetch(`${this.baseUrl}/api/tx/${hash}`);
+        if (!response.ok) {
+            throw new Error(`Failed to fetch transaction: ${response.statusText}`);
+        }
+        return response.json();
+    }
 }
