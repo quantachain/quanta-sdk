@@ -1,10 +1,14 @@
 {
   "name": "quanta-sdk",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "JS/TS SDK for the Quanta Protocol Ecosystem",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
+  "browser": {
+    "fs": false,
+    "path": false
+  },
   "bin": {
     "quanta-cli": "dist/cli/index.js"
   },
