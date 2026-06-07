@@ -37,7 +37,7 @@ export class QuantaClient {
      * Get the current node status
      */
     async getStatus(): Promise<NodeStatus> {
-        const response = await fetch(`${this.baseUrl}/api/health`);
+        const response = await fetch(`${this.baseUrl}/health`);
         if (!response.ok) {
             throw new Error(`Failed to fetch node status: ${response.statusText}`);
         }

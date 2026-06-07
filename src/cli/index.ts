@@ -192,8 +192,8 @@ async function main() {
         }
 
         try {
-            const tx = TransactionBuilder.createUnsigned(wallet.address, toAddress, amountMicrounits, feeMicrounits, nonce);
-            const signedTx = wallet.signTransaction(tx);
+            const tx = TransactionBuilder.createTransfer(wallet.address, toAddress, amountMicrounits, nonce, feeMicrounits);
+            const signedTx = TransactionBuilder.sign(tx, wallet);
             const result = await client.submitTransaction(signedTx);
 
             if (isJson) return printJson(result);
