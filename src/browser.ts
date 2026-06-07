@@ -1,6 +1,11 @@
+export interface QuantaSignature {
+    signatureHex: string;
+    publicKeyHex: string;
+}
+
 export interface QuantaProvider {
     requestAccounts: () => Promise<string[]>;
-    signMessage: (message: string) => Promise<string>;
+    signMessage: (message: string) => Promise<QuantaSignature>;
 }
 
 declare global {
@@ -31,9 +36,9 @@ export class BrowserProvider {
     /**
      * Requests the user to sign a message using their Quanta Wallet.
      * @param message The string message to be signed.
-     * @returns A promise that resolves to the Falcon-512 signature in hex format.
+     * @returns A promise that resolves to the Falcon-512 signature and public key.
      */
-    public async signMessage(message: string): Promise<string> {
+    public async signMessage(message: string): Promise<QuantaSignature> {
         if (!this.isAvailable()) {
             throw new Error("Quanta Wallet extension not found. Please install the extension first.");
         }
