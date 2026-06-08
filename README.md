@@ -147,6 +147,28 @@ const tx = TransactionBuilder.createUnsigned(
 
 ---
 
+### `BrowserProvider`
+
+Enables Web3 dApp integrations by communicating with the Quanta Wallet browser extension.
+
+```typescript
+import { BrowserProvider } from 'quanta-sdk';
+
+// Check if the wallet extension is installed
+if (window.quanta) {
+  const provider = new BrowserProvider(window.quanta);
+  
+  // Request wallet connection
+  await provider.connect();
+  console.log('Connected Address:', provider.address);
+  
+  // Sign a message (returns signature and public key)
+  const { signatureHex, publicKeyHex } = await provider.signMessage('Hello Quanta!');
+}
+```
+
+---
+
 ## CLI
 
 ```bash
