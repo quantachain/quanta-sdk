@@ -1,6 +1,6 @@
 {
   "name": "quanta-sdk",
-  "version": "0.1.2",
+  "version": "0.1.5",
   "description": "JS/TS SDK for the Quanta Protocol Ecosystem",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -26,7 +26,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "quanta-wasm": "^0.2.2"
+    "quanta-wasm": "^0.3.0"
   },
   "devDependencies": {
     "@types/node": "^20.12.0",

@@ -32,6 +32,24 @@ export interface SignedTransaction extends Omit<UnsignedTransaction, 'lock_time'
     public_key: number[];
 }
 
+// --- Native Contract Interfaces ---
+export interface EscrowInitArgs { beneficiary: string; secret_hash: string; refund_height: number; }
+export interface EscrowClaimArgs { preimage: string; }
+export interface AgentJobInitArgs { worker: string; task_hash: string; deadline_height: number; }
+export interface AgentJobClaimArgs { result_hash: string; }
+export interface AgentBidInitArgs { task_hash: string; bid_close_height: number; refund_height: number; }
+export interface AgentBidSubmitArgs { result_hash: string; price: number; }
+export interface AgentBidSelectArgs { winner: string; }
+export interface StreamInitArgs { recipient: string; rate_per_block: number; }
+export interface AgentRegisterArgs { agent_address: string; name: string; endpoint_hash: string; service_type: string; price_per_call: number; }
+export interface AgentUpdateArgs { endpoint_hash?: string; price_per_call?: number; active?: boolean; }
+export interface AgentReputationInitArgs { agent_address: string; }
+export interface AgentRateArgs { job_contract: string; score: number; review_hash?: string; }
+
+export function jsonToBytes(obj: any): number[] {
+    return Array.from(new TextEncoder().encode(JSON.stringify(obj)));
+}
+
 export class TransactionBuilder {
     static readonly DEFAULT_FEE = 10000;
     static readonly DEPLOY_FEE = 50000;
@@ -103,18 +121,61 @@ export class TransactionBuilder {
         } as UnsignedTransaction;
     }
 
-    static createEscrowDeploy(sender: string, beneficiary: string, secretHashHex: string, amount: number, nonce: number): UnsignedTransaction {
-        const args = { beneficiary, secret_hash: secretHashHex };
-        const initArgs = Array.from(new TextEncoder().encode(JSON.stringify(args)));
-        const tx = TransactionBuilder.createContractDeploy(sender, 0, initArgs, nonce);
+    // --- Native Contracts ---
+    static createEscrowDeploy(sender: string, args: EscrowInitArgs, amount: number, nonce: number): UnsignedTransaction {
+        const tx = TransactionBuilder.createContractDeploy(sender, 1, jsonToBytes(args), nonce);
         tx.amount = amount;
         return tx;
     }
 
-    static createEscrowClaim(sender: string, contractAddress: string, preimageHex: string, nonce: number): UnsignedTransaction {
-        const args = { preimage: preimageHex };
-        const callArgs = Array.from(new TextEncoder().encode(JSON.stringify(args)));
-        return TransactionBuilder.createContractCall(sender, contractAddress, "claim", callArgs, nonce);
+    static createEscrowClaim(sender: string, contractAddress: string, args: EscrowClaimArgs, nonce: number): UnsignedTransaction {
+        return TransactionBuilder.createContractCall(sender, contractAddress, "claim", jsonToBytes(args), nonce);
+    }
+
+    static createAgentJobDeploy(sender: string, args: AgentJobInitArgs, amount: number, nonce: number): UnsignedTransaction {
+        const tx = TransactionBuilder.createContractDeploy(sender, 2, jsonToBytes(args), nonce);
+        tx.amount = amount;
+        return tx;
+    }
+
+    static createAgentJobClaim(sender: string, contractAddress: string, args: AgentJobClaimArgs, nonce: number): UnsignedTransaction {
+        return TransactionBuilder.createContractCall(sender, contractAddress, "claim", jsonToBytes(args), nonce);
+    }
+
+    static createAgentBidDeploy(sender: string, args: AgentBidInitArgs, amount: number, nonce: number): UnsignedTransaction {
+        const tx = TransactionBuilder.createContractDeploy(sender, 3, jsonToBytes(args), nonce);
+        tx.amount = amount;
+        return tx;
+    }
+
+    static createAgentBidSubmit(sender: string, contractAddress: string, args: AgentBidSubmitArgs, nonce: number): UnsignedTransaction {
+        return TransactionBuilder.createContractCall(sender, contractAddress, "submit_bid", jsonToBytes(args), nonce);
+    }
+
+    static createAgentBidSelect(sender: string, contractAddress: string, args: AgentBidSelectArgs, nonce: number): UnsignedTransaction {
+        return TransactionBuilder.createContractCall(sender, contractAddress, "select_winner", jsonToBytes(args), nonce);
+    }
+
+    static createStreamDeploy(sender: string, args: StreamInitArgs, amount: number, nonce: number): UnsignedTransaction {
+        const tx = TransactionBuilder.createContractDeploy(sender, 4, jsonToBytes(args), nonce);
+        tx.amount = amount;
+        return tx;
+    }
+
+    static createAgentRegistryDeploy(sender: string, args: AgentRegisterArgs, nonce: number): UnsignedTransaction {
+        return TransactionBuilder.createContractDeploy(sender, 5, jsonToBytes(args), nonce);
+    }
+
+    static createAgentRegistryUpdate(sender: string, contractAddress: string, args: AgentUpdateArgs, nonce: number): UnsignedTransaction {
+        return TransactionBuilder.createContractCall(sender, contractAddress, "update", jsonToBytes(args), nonce);
+    }
+
+    static createAgentReputationDeploy(sender: string, args: AgentReputationInitArgs, nonce: number): UnsignedTransaction {
+        return TransactionBuilder.createContractDeploy(sender, 6, jsonToBytes(args), nonce);
+    }
+
+    static createAgentReputationRate(sender: string, contractAddress: string, args: AgentRateArgs, nonce: number): UnsignedTransaction {
+        return TransactionBuilder.createContractCall(sender, contractAddress, "rate", jsonToBytes(args), nonce);
     }
 
     static createWithData(sender: string, recipient: string, amount: number, payload: number[], nonce: number): UnsignedTransaction {

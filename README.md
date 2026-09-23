@@ -130,18 +130,38 @@ const signedTx = TransactionBuilder.sign(tx, wallet);
 #### TimeLock Transfer
 
 ```typescript
-const tx = TransactionBuilder.createUnsigned(
-  sender, recipient, amount, nonce,
-  { type: 'TimeLockTransfer', unlock_height: 20000 }
+const tx = TransactionBuilder.createTimeLock(
+  sender, recipient, amount, 20000, nonce // unlock_height
 );
 ```
 
-#### MultiSig Transfer
+#### Native Contracts (AI Agents)
+
+The SDK provides native wrappers for deploying and interacting with built-in agent smart templates.
 
 ```typescript
-const tx = TransactionBuilder.createUnsigned(
-  sender, recipient, amount, nonce,
-  { type: 'MultiSigTransfer', signers_required: 3 }
+// 1. Deploy an Escrow
+const deployTx = TransactionBuilder.createEscrowDeploy(
+  sender,
+  { beneficiary: '0xAGENT', secret_hash: '0xHash', refund_height: 50000 },
+  10_000_000, // Amount to escrow (10 QUA)
+  nonce
+);
+
+// 2. Deploy an Agent Job
+const jobTx = TransactionBuilder.createAgentJobDeploy(
+  sender,
+  { worker: '0xAGENT', task_hash: '0xTask', deadline_height: 50000 },
+  10_000_000, // Budget
+  nonce
+);
+
+// 3. Agent Claims Payment
+const claimTx = TransactionBuilder.createAgentJobClaim(
+  agentAddress, 
+  '0xCONTRACT', 
+  { result_hash: '0xResult' }, 
+  agentNonce
 );
 ```
 
